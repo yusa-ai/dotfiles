@@ -43,7 +43,6 @@ require("lazy").setup({
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
 	{ "ggandor/leap.nvim" },
-	-- {'sbdchd/neoformat'},
 	{
 		"stevearc/conform.nvim",
 		opts = {},
