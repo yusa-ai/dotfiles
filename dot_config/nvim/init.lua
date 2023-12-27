@@ -95,6 +95,7 @@ require("lazy").setup({
 			})
 		end,
 	},
+  {'sindrets/diffview.nvim'},
 })
 
 vim.cmd.colorscheme("catppuccin-mocha")
