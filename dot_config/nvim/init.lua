@@ -1,6 +1,7 @@
 vim.g.mapleader = " "
 
 --  Smart case search
+vim.opt.ignorecase = true
 vim.opt.scs = true
 
 -- Number of columns
