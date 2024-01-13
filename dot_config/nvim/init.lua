@@ -4,9 +4,6 @@ vim.g.mapleader = " "
 vim.opt.ignorecase = true
 vim.opt.scs = true
 
--- Number of columns
---vim.opt.co=80
-
 -- Line numbers
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -86,17 +83,23 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
-			local configs = require("nvim-treesitter.configs")
+      local configs = require("nvim-treesitter.configs")
 
-			configs.setup({
-				ensure_installed = { "lua", "javascript", "html", "css", "php" },
-				sync_install = false,
-				highlight = { enable = true },
-				indent = { enable = true },
-			})
-		end,
-	},
+      configs.setup({
+        ensure_installed = { "lua", "javascript", "html", "css", "php" },
+        sync_install = false,
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+  },
   {'sindrets/diffview.nvim'},
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {},
+  },
+  {'nvim-tree/nvim-tree.lua'},
 })
 
 vim.cmd.colorscheme("catppuccin-mocha")
@@ -153,9 +156,9 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		-- Conform will run multiple formatters sequentially
-		-- python = { "isort", "black" },
+		-- python = { "isort", "black" }
 		-- Use a sub-list to run only the first available formatter
-		javascript = { { "prettierd", "prettier" } },
+		javascript = { { "eslint", "prettierd", "prettier" } },
 		html = { { "prettierd", "prettier" } },
 	},
 })
@@ -171,4 +174,24 @@ vim.api.nvim_create_user_command("Format", function(args)
 	end
 	require("conform").format({ async = true, lsp_fallback = true, range = range })
 end, { range = true })
+
+vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end)
+vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end)
+vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
+vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end)
+vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end)
+vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
+
+vim.diagnostic.config({
+  virtual_text = false,
+})
+
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- empty setup using defaults
+require("nvim-tree").setup()
+
+vim.api.nvim_set_keymap('n', '<Leader>n', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
 
