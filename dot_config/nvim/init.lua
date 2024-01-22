@@ -100,6 +100,7 @@ require("lazy").setup({
     opts = {},
   },
   {'nvim-tree/nvim-tree.lua'},
+  {'lewis6991/gitsigns.nvim'},
 })
 
 vim.cmd.colorscheme("catppuccin-mocha")
@@ -194,4 +195,6 @@ vim.g.loaded_netrwPlugin = 1
 require("nvim-tree").setup()
 
 vim.api.nvim_set_keymap('n', '<Leader>n', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
+
+require('gitsigns').setup()
 
