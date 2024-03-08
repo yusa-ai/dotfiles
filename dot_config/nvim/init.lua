@@ -1,3 +1,6 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.g.mapleader = " "
 
 --  Smart case search
@@ -40,7 +43,12 @@ require("lazy").setup({
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
-	{ "ggandor/leap.nvim" },
+  {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
+  {'neovim/nvim-lspconfig'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/nvim-cmp'},
+  {'L3MON4D3/LuaSnip'},
+  { "ggandor/leap.nvim" },
 	{
 		"stevearc/conform.nvim",
 		opts = {},
@@ -59,34 +67,14 @@ require("lazy").setup({
 		opts = {}, -- this is equalent to setup({}) function
 	},
 	{ "github/copilot.vim" },
-	-- LSP Support
-	{
-		"VonHeikemen/lsp-zero.nvim",
-		branch = "v3.x",
-		lazy = true,
-		config = false,
-	},
-	{
-		"neovim/nvim-lspconfig",
-		dependencies = {
-			{ "hrsh7th/cmp-nvim-lsp" },
-		},
-	},
-	-- Autocompletion
-	{
-		"hrsh7th/nvim-cmp",
-		dependencies = {
-			{ "L3MON4D3/LuaSnip" },
-		},
-	},
-	{
+  {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
+  {'neovim/nvim-lspconfig'},
+ 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		config = function()
+		coofig = function()
       local configs = require("nvim-treesitter.configs")
-
       configs.setup({
-        ensure_installed = { "lua", "javascript", "html", "css", "php" },
         sync_install = false,
         highlight = { enable = true },
         indent = { enable = true },
@@ -110,8 +98,6 @@ vim.opt.termguicolors = true
 local lsp_zero = require("lsp-zero")
 
 lsp_zero.on_attach(function(client, bufnr)
-	-- see :help lsp-zero-keybindings
-	-- to learn the available actions
 	lsp_zero.default_keymaps({ buffer = bufnr })
 end)
 
@@ -119,28 +105,10 @@ require("mason").setup({})
 require("mason-lspconfig").setup({
 	handlers = {
 		lsp_zero.default_setup,
+    volar = function()
+      require('lspconfig').volar.setup{}
+    end,
 	},
-})
-
-local cmp = require("cmp")
-local cmp_action = require("lsp-zero").cmp_action()
-
-cmp.setup({
-	mapping = cmp.mapping.preset.insert({
-		-- `Enter` key to confirm completion
-		["<CR>"] = cmp.mapping.confirm({ select = false }),
-
-		-- Ctrl+Space to trigger completion menu
-		["<C-Space>"] = cmp.mapping.complete(),
-
-		-- Navigate between snippet placeholder
-		["<C-f>"] = cmp_action.luasnip_jump_forward(),
-		["<C-b>"] = cmp_action.luasnip_jump_backward(),
-
-		-- Scroll up and down in the completion documentation
-		["<C-u>"] = cmp.mapping.scroll_docs(-4),
-		["<C-d>"] = cmp.mapping.scroll_docs(4),
-	}),
 })
 
 require("leap").add_default_mappings()
@@ -156,11 +124,10 @@ require("Comment").setup()
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
-		-- Conform will run multiple formatters sequentially
-		-- python = { "isort", "black" }
 		-- Use a sub-list to run only the first available formatter
 		javascript = { { "eslint", "prettierd", "prettier" } },
 		html = { { "prettierd", "prettier" } },
+    vue = { { "prettierd", "prettier" } },
 	},
 })
 
@@ -187,14 +154,9 @@ vim.diagnostic.config({
   virtual_text = false,
 })
 
--- disable netrw at the very start of your init.lua
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- empty setup using defaults
 require("nvim-tree").setup()
 
 vim.api.nvim_set_keymap('n', '<Leader>n', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
 
 require('gitsigns').setup()
-
