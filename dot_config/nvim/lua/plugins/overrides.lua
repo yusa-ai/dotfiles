@@ -31,6 +31,9 @@ return {
         prettier = {
           prepend_args = { "--single-quote" },
         },
+        black = {
+          prepend_args = { "--line-length", "79" },
+        },
       },
     },
   },
